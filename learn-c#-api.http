@@ -1,0 +1,6 @@
+@learn_c__api_HostAddress = http://localhost:5180
+
+GET {{learn_c__api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
