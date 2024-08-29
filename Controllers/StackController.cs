@@ -1,4 +1,6 @@
 ﻿using learn_c__api.Data;
+using learn_c__api.Dtos.Stock;
+using learn_c__api.Mappers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace learn_c__api.Controllers;
@@ -15,7 +17,8 @@ public class StockController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        var stocks = _context.Stocks.ToList();
+        var stocks = _context.Stocks.ToList()
+            .Select(s => s.ToStockDto());
         return Ok(stocks);
     }
 
@@ -29,5 +32,14 @@ public class StockController : ControllerBase
         }
 
         return Ok(stock);
+    }
+    [HttpPost]
+    public IActionResult Create([FromBody] CreateStockRequestDto stockDto)
+    {
+        Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(stockDto));
+        var stockModel = stockDto.ToStockFromCreateDTO();
+        _context.Stocks.Add(stockModel);
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
     }
 }
