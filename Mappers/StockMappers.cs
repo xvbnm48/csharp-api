@@ -30,5 +30,6 @@ namespace learn_c__api.Mappers
                 MarketCap = stockDto.MarketCap
             };
         }
+       
     }
 }
