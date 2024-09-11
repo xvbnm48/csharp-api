@@ -1,5 +1,6 @@
 ﻿using learn_c__api.Data;
 using learn_c__api.Dtos.Stock;
+using learn_c__api.Interface;
 using learn_c__api.Mappers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,23 +11,27 @@ namespace learn_c__api.Controllers;
 public class StockController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
-    public StockController(ApplicationDbContext context)
+    private readonly IStockRepository _stockRepo;
+    public StockController(ApplicationDbContext context, IStockRepository repository)
     {
+        _stockRepo = repository;
         _context = context;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var stocks = await _context.Stocks.ToListAsync();
-            var stockDto = stocks.Select(s => s.ToStockDto());
+        //var stocks = await _context.Stocks.ToListAsync();
+        var stocks = await _stockRepo.GetAllAsync();
+        var stockDto = stocks.Select(s => s.ToStockDto());
         return Ok(stocks);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var stock = await _context.Stocks.FindAsync(id);
+        var stock = await _stockRepo.GetByIdAsync(id);
+        //var stock = await _context.Stocks.FindAsync(id);
         if (stock == null)
         {
             return NotFound();
@@ -39,8 +44,9 @@ public class StockController : ControllerBase
     {
         Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(stockDto));
         var stockModel = stockDto.ToStockFromCreateDTO();
-        await _context.Stocks.AddAsync(stockModel);
-        await _context.SaveChangesAsync();
+        //await _context.Stocks.AddAsync(stockModel);
+        //await _context.SaveChangesAsync()
+        await _stockRepo.CreateStock(stockModel);
         return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
     }
     [HttpPut]
