@@ -75,15 +75,21 @@ public class StockController : ControllerBase
     [Route("{id}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
-        var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+       var stockModel = await _stockRepo.DeleteAsync(id);
         if (stockModel == null)
         {
-            return NotFound();
+            return NotFound();        
         }
-
-        _context.Stocks.Remove(stockModel);
-        await _context.SaveChangesAsync();
         return NoContent();
+        //var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+        //if (stockModel == null)
+        //{
+        //    return NotFound();
+        //}
+
+        //_context.Stocks.Remove(stockModel);
+        //await _context.SaveChangesAsync();
+        //return NoContent();
         // var IdStock = _context.Stocks.Find(id);
         // if (IdStock == null)
         // {
