@@ -53,19 +53,20 @@ public class StockController : ControllerBase
     [Route("{id}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto stockDto)
     {
-        var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+        //var stockModel = await _context.Stocks.FirstOrDefaultAsync(x => x.Id == id);
+        var stockModel = await _stockRepo.UpdateAsync(id, stockDto);
         if (stockModel== null)
         {
             return NotFound();
         }
-        stockModel.Symbol = stockDto.Symbol;
-        stockModel.CompanyName = stockDto.CompanyName;
-        stockModel.Purchase = stockDto.Purchase;
-        stockModel.LastDiv = stockDto.LastDiv;
-        stockModel.Industry = stockDto.Industry;
-        stockModel.MarketCap = stockDto.MarketCap;
+        //stockModel.Symbol = stockDto.Symbol;
+        //stockModel.CompanyName = stockDto.CompanyName;
+        //stockModel.Purchase = stockDto.Purchase;
+        //stockModel.LastDiv = stockDto.LastDiv;
+        //stockModel.Industry = stockDto.Industry;
+        //stockModel.MarketCap = stockDto.MarketCap;
 
-        await _context.SaveChangesAsync();
+        //await _context.SaveChangesAsync();
 
         return Ok(stockModel.ToStockDto());
 
